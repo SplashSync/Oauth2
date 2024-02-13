@@ -49,22 +49,5 @@
 
     "archive": {
         "exclude": ["/bin", "/ci", "/docs", "/docker", "/tests"]
-    },
-
-    "scripts": {
-        "auto-scripts": [
-            "php bin/console cache:clear",
-            "php bin/console doctrine:schema:update --force --complete --no-interaction --no-debug",
-            "find var/cache/dev/*.xml | while read -r i; do cp \"$i\" var/cache/dev/testContainer.xml; done"
-        ],
-        "post-install-cmd": [
-            "@auto-scripts"
-        ],
-        "post-update-cmd": [
-            "@auto-scripts"
-        ]
-    },
-    "extra": {
-        "public-dir": "tests/public"
     }
 }

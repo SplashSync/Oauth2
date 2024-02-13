@@ -13,6 +13,7 @@
  *  file that was distributed with this source code.
  */
 
+namespace Splash\Security\Oauth2;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
