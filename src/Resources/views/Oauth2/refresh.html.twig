@@ -1,0 +1,32 @@
+{% trans_default_domain "SplashOauth2Bundle" %}
+
+{#
+    MANUAL REFRESH OF ACCESS TOKEN IF POSSIBLE
+#}
+
+{% set accessToken = connector.accessToken %}
+
+{% if accessToken is not empty and accessToken.refreshToken is not empty %}
+    <!-- Oauth2 Refresh Token Block -->
+    {% if accessToken.expires is not empty and accessToken.expired %}
+        <p>{{ 'refresh.expired' | trans }}</p>
+    {% elseif accessToken.expires is not empty %}
+        <p>{{ 'refresh.expires' | trans({"%TimeToExpire%": accessToken.expires | ago}) }}</p>
+    {% endif %}
+
+    <a
+            id="node-refresh-token-btn" class="btn-lg btn-block btn-primary text-center"
+            target="_blank"
+            href="{{ path('splash_connector_secured_action', {
+                "connectorName" :   connector.profile.name,
+                "webserviceId" :    connector.WebserviceId,
+                "action" :          "refresh"
+            }) }}"
+            title="{{ 'refresh.tooltip' | trans }}"
+    >
+        <i class="fa fa-refresh"></i>
+        {{ 'refresh.title' | trans }}
+    </a>
+    <!-- End Oauth2 Refresh Token Block -->
+{% endif %}
+

@@ -1,0 +1,16 @@
+services:
+    _defaults:
+        autowire:       true
+        autoconfigure:  true
+
+    ################################################################################
+    # Auto-wiring for Actions
+    Splash\Security\Oauth2\Actions\:
+        resource:   '../../Actions'
+        tags:
+          - { name: 'controller.service_arguments' }
+
+    ################################################################################
+    # Auto-wiring for Services
+    Splash\Security\Oauth2\Services\:
+        resource:   '../../Services'

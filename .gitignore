@@ -2,3 +2,6 @@
 /.idea/modules.xml
 /.idea/Php-Oauth2.iml
 /.idea/workspace.xml
+/.php-cs-fixer.cache
+/composer.lock
+/vendor/

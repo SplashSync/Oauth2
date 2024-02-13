@@ -1,0 +1,25 @@
+{% trans_default_domain "SplashOauth2Bundle" %}
+
+{% if not connector.connect %}
+    <!-- Oauth2 Connect Block -->
+    <p>
+        {{ 'connect.intro' | trans }}
+    </p>
+    <a
+            id="node-connect-btn" class="btn-lg btn-block btn-primary text-center"
+            target="_blank"
+            href="{{ path('splash_connector_secured_action', {
+                "connectorName" :   connector.profile.name,
+                "webserviceId" :    connector.WebserviceId,
+                "action" :          "connect"
+            }) }}"
+            title="{{ 'connect.tooltip' | trans }}"
+    >
+        <i class="fa fa-user-secret"></i>
+        {{ 'connect.title' | trans }}
+    </a>
+    <!-- End Oauth2 Connect  Block -->
+{% endif %}
+    
+
+
