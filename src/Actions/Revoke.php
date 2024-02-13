@@ -34,6 +34,6 @@ class Revoke extends AbstractController
     ): Response {
         //==============================================================================
         // Delete Current OAuth2 Token
-        return $manager->revokeToken($connector) ?? self::getDefaultResponse();
+        return $manager->revokeToken($connector);
     }
 }
