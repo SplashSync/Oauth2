@@ -40,10 +40,6 @@ class Oauth2ClientManager
 
     /**
      * Get Connector Connect Redirect Response
-     *
-     * @param AbstractConnector $connector
-     *
-     * @return null|Response
      */
     public function connect(AbstractConnector $connector): ?Response
     {
@@ -85,11 +81,10 @@ class Oauth2ClientManager
             return null;
         }
 
-        //FantineBtc2024!
         //==============================================================================
         // Fetch Webserver ID from Session so that we could identify
-        /** @var null|string $webserverId */
-        if (!$webserverId = $this->session->get($state)) {
+        $webserverId = $this->session->get($state);
+        if (!$webserverId || !is_string($webserverId)) {
             return null;
         }
         //==============================================================================
@@ -121,6 +116,9 @@ class Oauth2ClientManager
         return self::getCloseResponse();
     }
 
+    /**
+     * Refresh Current Connector Oauth2 Token
+     */
     public function refreshToken(AbstractConnector $connector): ?Response
     {
         //==============================================================================
@@ -156,8 +154,6 @@ class Oauth2ClientManager
 
     /**
      * Return Default Empty Connector Response
-     *
-     * @return Response
      */
     public static function getCloseResponse(): Response
     {
@@ -166,14 +162,9 @@ class Oauth2ClientManager
 
     /**
      * Get Connector Oauth Client
-     *
-     * @param AbstractConnector $connector
-     *
-     * @return null|Response
      */
-    private function getClient(
-        AbstractConnector $connector,
-    ): ?OAuth2ClientInterface {
+    private function getClient(AbstractConnector $connector): ?OAuth2ClientInterface
+    {
         //==============================================================================
         // Safety Check - This Connector Uses Oauth2
         if (!($connector instanceof Oauth2AwareConnector)) {

@@ -15,26 +15,22 @@
 
 namespace Splash\Security\Oauth2\Form;
 
-use Splash\Connectors\Sellsy\Form\AbstractSellsyType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
  * Splash Connector Private Application Configuration Form
  */
-class PrivateAppConfigurationForm extends AbstractSellsyType
+class PrivateAppConfigurationForm extends AbstractType
 {
     /**
-     * Build Optilog Edit Form
+     * {@inheritdoc }
      *
-     * @param FormBuilderInterface $builder
-     * @param array                $options
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('apiKey', Type\ApiClientIdType::class);
         $builder->add('apiSecret', Type\ApiClientSecretType::class);
-
-        //        $this->addWsHostField($builder, $options);
-        //        $this->addApiKeyField($builder, $options);
     }
 }

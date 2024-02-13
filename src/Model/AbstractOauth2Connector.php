@@ -123,6 +123,6 @@ abstract class AbstractOauth2Connector extends AbstractConnector implements Oaut
             return null;
         }
 
-        return $this->getAccessToken()->getToken();
+        return $this->getAccessToken()?->getToken();
     }
 }
