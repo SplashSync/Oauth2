@@ -8,25 +8,46 @@
 
 {% if accessToken is not empty and accessToken.refreshToken is not empty %}
     <!-- Oauth2 Refresh Token Block -->
-    {% if accessToken.expires is not empty and accessToken.expired %}
-        <p>{{ 'refresh.expired' | trans }}</p>
-    {% elseif accessToken.expires is not empty %}
-        <p>{{ 'refresh.expires' | trans({"%TimeToExpire%": accessToken.expires | ago}) }}</p>
-    {% endif %}
 
-    <a
-            id="node-refresh-token-btn" class="btn-lg btn-block btn-primary text-center"
-            target="_blank"
-            href="{{ path('splash_connector_secured_action', {
-                "connectorName" :   connector.profile.name,
-                "webserviceId" :    connector.WebserviceId,
-                "action" :          "refresh"
-            }) }}"
-            title="{{ 'refresh.tooltip' | trans }}"
-    >
-        <i class="fa fa-refresh"></i>
-        {{ 'refresh.title' | trans }}
-    </a>
+    <div class="row">
+        <div class="col-12 col-md-8">
+            {% if accessToken.expires is not empty and accessToken.expired %}
+                <p>{{ 'refresh.expired' | trans }}</p>
+            {% elseif accessToken.expires is not empty %}
+                <p>{{ 'refresh.expires' | trans({"%TimeToExpire%": accessToken.expires | ago}) }}</p>
+            {% endif %}
+        </div>
+        <div class="col-12 col-md-4">
+            <a
+                    id="node-refresh-token-btn" class="btn btn-md btn-primary text-center"
+                    target="_blank"
+                    href="{{ path('splash_connector_secured_action', {
+                        "connectorName" :   connector.profile.name,
+                        "webserviceId" :    connector.WebserviceId,
+                        "action" :          "refresh"
+                    }) }}"
+                    title="{{ 'refresh.tooltip' | trans }}"
+            >
+                <i class="fa fa-refresh"></i>
+                {{ 'refresh.title' | trans }}
+            </a>
+
+            <a
+                    id="node-revoke-token-btn" class="btn btn-md btn-default text-center"
+                    target="_blank"
+                    href="{{ path('splash_connector_secured_action', {
+                        "connectorName" :   connector.profile.name,
+                        "webserviceId" :    connector.WebserviceId,
+                        "action" :          "revoke"
+                    }) }}"
+                    title="{{ 'revoke.tooltip' | trans }}"
+            >
+                <i class="fa fa-trash text-danger"></i>
+                {{ 'revoke.title' | trans }}
+            </a>
+        </div>
+    </div>
+
     <!-- End Oauth2 Refresh Token Block -->
 {% endif %}
 

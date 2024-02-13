@@ -21,7 +21,13 @@ connect:
 ################################################################
 # Connector Profile Blocks - Refresh
 refresh:
-    title:      "Refresh API Token"
-    tooltip:    "Refresh your connection token"
-    expired:    "Current token has expired and will be automatically refreshed"
-    expires:    "Current token will expire %TimeToExpire% and will be automatically refreshed"
+    title:      "Refresh"
+    tooltip:    "Refresh your authorisation code"
+    expired:    "Authorisation code has expired and will be automatically refreshed"
+    expires:    "Authorisation code will expire %TimeToExpire% and will be automatically refreshed"
+
+################################################################
+# Connector Profile Blocks - Revoke
+revoke:
+    title:      "Revoke"
+    tooltip:    "Delete your authorisation code"

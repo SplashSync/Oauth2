@@ -15,6 +15,7 @@
 
 namespace Splash\Security\Oauth2\Model;
 
+use KnpU\OAuth2ClientBundle\Client\OAuth2ClientInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use Psr\Log\LoggerInterface;
 use Splash\Bundle\Models\AbstractConnector;
@@ -55,7 +56,19 @@ abstract class AbstractOauth2Connector extends AbstractConnector implements Oaut
             ));
         }
 
-        return new AccessToken($tokenValues);
+        try {
+            return new AccessToken($tokenValues);
+        } catch (\InvalidArgumentException) {
+            return null;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOauth2Client() : ?OAuth2ClientInterface
+    {
+        return $this->oauth2ClientManager->getClient($this);
     }
 
     /**
@@ -98,6 +111,7 @@ abstract class AbstractOauth2Connector extends AbstractConnector implements Oaut
         return array(
             "connect" => Actions\Connect::class,
             "refresh" => Actions\Refresh::class,
+            "revoke" => Actions\Revoke::class,
         );
     }
 

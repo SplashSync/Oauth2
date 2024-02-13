@@ -26,6 +26,7 @@ use Splash\Security\Oauth2\Model\Oauth2AwareConnector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Splash manager for Connectors Oauth2 Features
@@ -35,6 +36,7 @@ class Oauth2ClientManager
     public function __construct(
         private ClientRegistry $registry,
         private SessionInterface $session,
+        private RouterInterface $router,
     ) {
     }
 
@@ -48,6 +50,9 @@ class Oauth2ClientManager
         if (!$webserviceId = $connector->getWebserviceId()) {
             return null;
         }
+        //==============================================================================
+        // Force Https for Redirect Requests
+        $this->router->getContext()->setScheme("https");
         //==============================================================================
         // Safety Check - Get & Configure Oauth2 Client
         if (!$client = $this->getClient($connector)) {
@@ -80,7 +85,6 @@ class Oauth2ClientManager
         if (!$code || !$state || !is_string($state)) {
             return null;
         }
-
         //==============================================================================
         // Fetch Webserver ID from Session so that we could identify
         $webserverId = $this->session->get($state);
@@ -92,6 +96,9 @@ class Oauth2ClientManager
         if (!$connector->identify($webserverId)) {
             return null;
         }
+        //==============================================================================
+        // Force Https for Redirect Requests
+        $this->router->getContext()->setScheme("https");
         //==============================================================================
         // Safety Check - Get & Configure Oauth2 Client
         if (!$client = $this->getClient($connector)) {
@@ -121,6 +128,9 @@ class Oauth2ClientManager
      */
     public function refreshToken(AbstractConnector $connector): ?Response
     {
+        //==============================================================================
+        // Force Https for Redirect Requests
+        $this->router->getContext()->setScheme("https");
         //==============================================================================
         // Safety Check - Get & Configure Oauth2 Client
         if (!$client = $this->getClient($connector)) {
@@ -153,6 +163,19 @@ class Oauth2ClientManager
     }
 
     /**
+     * Revoke / Delete Connector Access Token
+     */
+    public function revokeToken(AbstractConnector $connector): Response
+    {
+        //==============================================================================
+        // Now update Connector Configuration
+        $connector->setParameter(Oauth2AwareConnector::ACCESS_TOKEN, null);
+        $connector->updateConfiguration();
+
+        return self::getCloseResponse();
+    }
+
+    /**
      * Return Default Empty Connector Response
      */
     public static function getCloseResponse(): Response
@@ -163,7 +186,7 @@ class Oauth2ClientManager
     /**
      * Get Connector Oauth Client
      */
-    private function getClient(AbstractConnector $connector): ?OAuth2ClientInterface
+    public function getClient(AbstractConnector $connector): ?OAuth2ClientInterface
     {
         //==============================================================================
         // Safety Check - This Connector Uses Oauth2
