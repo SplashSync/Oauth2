@@ -1,0 +1,70 @@
+{
+    "name":                 "splash/oauth2",
+    "description":          "Splash Oauth2 Features for API Connectors",
+
+    "type":                 "symfony-bundle",
+    "license":              "MIT",
+    "minimum-stability":    "dev",
+    "prefer-stable":        true,
+
+    "authors": [
+        {
+            "name":"Splash Sync",
+            "email":"contact@splashsync.com"
+        },
+        {
+            "name": "BadPixxel",
+            "email": "eshop.bpaquier@gmail.com"
+        }
+    ],
+
+    "autoload": {
+        "psr-4": { 
+            "Splash\\Security\\Oauth2\\":               "src/"
+        }
+    },
+    
+    "autoload-dev": {
+        "psr-4": {
+            "Splash\\Security\\Oauth2\\Test\\":         "tests/"
+        }        
+    },
+
+    "require": {
+        "php":                                          "^8.1",
+        "ext-json":                                     "*",
+        "knpuniversity/oauth2-client-bundle":           "~2.0"
+    },
+    
+    "require-dev": {
+        "badpixxel/php-sdk":                            "~2.0",
+    },
+
+    "config": {
+        "allow-plugins": {
+            "phpro/grumphp":    true,
+            "symfony/runtime":  true
+        }
+    },
+
+    "archive": {
+        "exclude": ["/bin", "/ci", "/docs", "/docker", "/tests"]
+    },
+
+    "scripts": {
+        "auto-scripts": [
+            "php bin/console cache:clear",
+            "php bin/console doctrine:schema:update --force --complete --no-interaction --no-debug",
+            "find var/cache/dev/*.xml | while read -r i; do cp \"$i\" var/cache/dev/testContainer.xml; done"
+        ],
+        "post-install-cmd": [
+            "@auto-scripts"
+        ],
+        "post-update-cmd": [
+            "@auto-scripts"
+        ]
+    },
+    "extra": {
+        "public-dir": "tests/public"
+    }
+}
