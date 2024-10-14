@@ -33,6 +33,11 @@ interface Oauth2AwareConnector
     const STATIC_TOKEN = "Token";
 
     /**
+     * Connector Storage Key for Client Redirect Uri
+     */
+    const REDIRECT_URI = "apiRedirectUri";
+
+    /**
      * Get Registration Code for Oauth2 Client
      */
     public function getOauth2ClientCode(): string;

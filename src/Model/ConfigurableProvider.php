@@ -42,9 +42,29 @@ abstract class ConfigurableProvider extends AbstractProvider
     }
 
     /**
+     * Force Oauth2 Client Redirect Uri
+     */
+    public function getRedirectUri(): ?string
+    {
+        return $this->redirectUri;
+    }
+
+    /**
+     * Force Oauth2 Client Redirect Uri
+     * In context of Token Refresh, Redirect Uri may be required by application
+     */
+    public function forceRedirectUri(AbstractConnector $connector): void
+    {
+        $redirectUri = $connector->getParameter(Oauth2AwareConnector::REDIRECT_URI);
+        if ($redirectUri && is_string($redirectUri)) {
+            $this->redirectUri = $redirectUri;
+        }
+    }
+
+    /**
      * Detect Oauth2 Client Configuration from Connector
      */
-    public function detectApiClient(AbstractConnector $connector): void
+    private function detectApiClient(AbstractConnector $connector): void
     {
         $clientId = $connector->getParameter(self::CLIENT_ID);
         $clientSecret = $connector->getParameter(self::CLIENT_SECRET);

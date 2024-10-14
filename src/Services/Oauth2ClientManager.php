@@ -34,9 +34,9 @@ use Symfony\Component\Routing\RouterInterface;
 class Oauth2ClientManager
 {
     public function __construct(
-        private ClientRegistry $registry,
-        private SessionInterface $session,
-        private RouterInterface $router,
+        private readonly ClientRegistry   $registry,
+        private readonly SessionInterface $session,
+        private readonly RouterInterface  $router,
     ) {
     }
 
@@ -105,22 +105,7 @@ class Oauth2ClientManager
             return null;
         }
 
-        try {
-            //==============================================================================
-            // Get Access Token
-            $accessToken = $client->getAccessToken();
-            //==============================================================================
-            // Now update Connector Configuration
-            $connector->setParameter(Oauth2AwareConnector::ACCESS_TOKEN, $accessToken->jsonSerialize());
-            $connector->updateConfiguration();
-        } catch (Exception $e) {
-            return new Response(
-                sprintf('Connexion Refused: %s', $e->getMessage()),
-                Response::HTTP_UNAUTHORIZED
-            );
-        }
-
-        return self::getCloseResponse();
+        return $this->saveTokenOnConnector($connector, $client);
     }
 
     /**
@@ -146,6 +131,12 @@ class Oauth2ClientManager
         if (!$refreshToken = $accessToken->getRefreshToken()) {
             return null;
         }
+        //==============================================================================
+        // Force Redirect Uri
+        $provider = $client->getOAuth2Provider();
+        if ($provider instanceof ConfigurableProvider) {
+            $provider->forceRedirectUri($connector);
+        }
 
         try {
             //==============================================================================
@@ -170,6 +161,7 @@ class Oauth2ClientManager
         //==============================================================================
         // Now update Connector Configuration
         $connector->setParameter(Oauth2AwareConnector::ACCESS_TOKEN, null);
+        $connector->setParameter(Oauth2AwareConnector::REDIRECT_URI, null);
         $connector->updateConfiguration();
 
         return self::getCloseResponse();
@@ -228,5 +220,34 @@ class Oauth2ClientManager
         //==============================================================================
         // Get Access Token from Connector
         return $connector->getAccessToken();
+    }
+
+    /**
+     * Update Access Token on Connector Parameters
+     */
+    private function saveTokenOnConnector(AbstractConnector $connector, OAuth2ClientInterface $client): Response
+    {
+        try {
+            //==============================================================================
+            // Get Access Token
+            $accessToken = $client->getAccessToken();
+            //==============================================================================
+            // Now update Connector Configuration
+            $connector->setParameter(Oauth2AwareConnector::ACCESS_TOKEN, $accessToken->jsonSerialize());
+            //==============================================================================
+            // Store Redirect Uri
+            $provider = $client->getOAuth2Provider();
+            if ($provider instanceof ConfigurableProvider) {
+                $connector->setParameter(Oauth2AwareConnector::REDIRECT_URI, $provider->getRedirectUri());
+            }
+            $connector->updateConfiguration();
+        } catch (Exception $e) {
+            return new Response(
+                sprintf('Connexion Refused: %s', $e->getMessage()),
+                Response::HTTP_UNAUTHORIZED
+            );
+        }
+
+        return self::getCloseResponse();
     }
 }
